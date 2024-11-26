@@ -31,10 +31,13 @@ def train_clusters():
 def clustering():
     df = DataManagement().get_dataset("Daily_return")
     clustering = Clustering(df)
+    # Hyperparameters training thanks to a manual grid 
     grid_params = clustering.manual_grid_search()
     grid_params.to_excel("manual_grid_search_results.xlsx")
+    # The optimal combination of hyperparameters in the xgboost model in relation to our data
     clustering.fit(preprocess_method="RobustScaler", n_clusters=4, init="k-means++", n_init=1000,
                    max_iter=10000, algorithm="lloyd", tol=0.0001)
+    # Graphical representation in 2 or 3 dimensions of our different clusters
     clustering.plot_clusters(3)
 
 def clusters_analysis():
@@ -44,7 +47,6 @@ def clusters_analysis():
 
 def forecasting_clusters():
     df = DataManagement().get_dataset("Dataset_Clustering")
-    print(df)
     forecasting = Forecasting(df)
     forecasting.grid_search()
 
@@ -54,12 +56,14 @@ def forecasting_analysis():
     Analyser.analyse_forecasting_results(results_df, "param_max_depth")
 
 # Step 1
-analysis()
+save_data()
 # Step 2
-clustering()
+analysis()
 # Step 3
-clusters_analysis()
+clustering()
 # Step 4
-forecasting_clusters()
+clusters_analysis()
 # Step 5
+forecasting_clusters()
+# Step 6
 forecasting_analysis()
